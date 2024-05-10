@@ -32,7 +32,7 @@ def initConnectors(self):
 
     # Search by ID button functionality
     searchIdBTN= self.findChild(QPushButton, "search_button")
-    searchIdBTN.clicked.connect(lambda: functions.handleSearchByIdButton(searchByIdTXB.toPlainText(), ByName, VtSignTBX))
+    searchIdBTN.clicked.connect(lambda: functions.searchThread(searchByIdTXB.toPlainText(), ByName, VtSignTBX))
 
     searchByIdTXB= self.findChild(QTextEdit,"searchbyid_textbox")
 
@@ -40,9 +40,11 @@ def initConnectors(self):
 
     # byName Textbox functionality
     ByName=self.findChild(QTextEdit, "displayed_name_textbox") 
+    ByName.setReadOnly(True)
     
 
     #Type of vital signs functionality 
     VtSignTBX= self.findChild(QTextEdit, "displayed_vital_sign_textbox")
+    VtSignTBX.setReadOnly(True)
   
 
