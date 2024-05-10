@@ -3,6 +3,8 @@ import random
 import json
 import time
 
+
+#ayyhaga
 # Client setup
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = 'localhost'  # or '127.0.0.1' to connect to the local machine
