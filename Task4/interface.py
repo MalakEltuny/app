@@ -28,3 +28,21 @@ def initConnectors(self):
 
     patientId=self.findChild(QTextEdit,"id_textbox")
     patientId.textChanged.connect(lambda: functions.handleTextChanged(self,patientId.toPlainText(),'id'))
+
+
+    # Search by ID button functionality
+    searchIdBTN= self.findChild(QPushButton, "search_button")
+    searchIdBTN.clicked.connect(lambda: functions.handleSearchByIdButton(searchByIdTXB.toPlainText(), ByName, VtSignTBX))
+
+    searchByIdTXB= self.findChild(QTextEdit,"searchbyid_textbox")
+
+    #searchByIdTXB.textChanged.connect(lambda: functions.handleSearchById(searchByIdTXB.toPlainText()))
+
+    # byName Textbox functionality
+    ByName=self.findChild(QTextEdit, "displayed_name_textbox") 
+    
+
+    #Type of vital signs functionality 
+    VtSignTBX= self.findChild(QTextEdit, "displayed_vital_sign_textbox")
+  
+

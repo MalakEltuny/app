@@ -11,11 +11,12 @@ def handle_client(client_socket, addr, redis_client):
     # Send initial message to the client
     initial_message = 'Welcome! server says hi'
     client_socket.send(initial_message.encode('ascii'))
-
+    
     # Receive data from the client and save to Redis
     while True:
         try:
             data = client_socket.recv(1024).decode('ascii')
+
             if not data:
                 print("Connection closed by client")
                 break
@@ -23,24 +24,36 @@ def handle_client(client_socket, addr, redis_client):
 
             # Parse JSON data
             try:
+
                 json_data = json.loads(data)
                 id = json_data["id"]
                 name = json_data["name"]
                 vital_sign = json_data["vital_sign"]
                 value = json_data["value"]
                 num = float(value)
+                type=json_data["type"]
+
             except ValueError:
                 client_socket.send("Invalid JSON format. Please send JSON object with fields 'id', 'name', 'vital_sign', and 'value'.".encode('ascii'))
                 continue
 
             # Construct the Redis key
-            redis_key = f"{id}_{name}_{vital_sign}"
+            if not type:
+             redis_key = f"{id}_{name}_{vital_sign}"
 
-            # Save the value to Redis under the constructed key
-            redis_client.rpush(redis_key, num)
-
-            # Retrieve the list of values from Redis under the constructed key
+             # Save the value to Redis under the constructed key
+             redis_client.rpush(redis_key, num)
+             # Retrieve the list of values from Redis under the constructed key
             values = redis_client.lrange(redis_key, 0, -1)
+            
+            if type:
+             # Retrieve keys matching the ID
+             redis_name= redis_client.keys(f'{id}*')
+             # Retrieve the list of values from Redis under the constructed key
+             values = redis_client.lrange(redis_name, 0, -1)
+ 
+
+            
 
             # Construct JSON response with the list of values
             response = {
