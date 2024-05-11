@@ -5,6 +5,7 @@ import time
 import threading
 import redis
 from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QTableWidgetItem
 
 
 
@@ -158,3 +159,63 @@ def searchThread(ID, name, vs):
       print("Connection is open.")
       handleSearchByIdButton(ID,name,vs)
 
+
+
+def plotGraph(self,plot):
+    global vitalSignValues
+    plot.clear()
+    plot.plot(vitalSignValues)
+    plot.show()
+
+
+
+def searchByVitalBtnClicked(self,searchByVitalTextBox, tableWidget):
+    tableWidget.setRowCount(0)
+    global redis_client
+    
+  
+    # Search for relevant data in the Redis database
+    keys = redis_client.keys(f'*_{searchByVitalTextBox}')
+  
+    for key in keys:
+        key_str = key.decode('utf-8')
+        patient_id = key_str.split("_")[0]
+        name = key_str.split("_")[1]
+        vital_sign = key_str.split("_")[2]
+        values = redis_client.lrange(key, 0, -1)
+        values = [float(value) for value in values]
+        print(values)
+      
+        row_position = tableWidget.rowCount()
+        tableWidget.insertRow(row_position)
+        tableWidget.setItem(row_position, 0, QTableWidgetItem(patient_id))
+        tableWidget.setItem(row_position, 1, QTableWidgetItem(name))
+        tableWidget.setItem(row_position, 2, QTableWidgetItem(vital_sign))
+        tableWidget.setItem(row_position, 3, QTableWidgetItem(str(values)))
+
+
+def getAllData(self,tableWidget):
+    
+    global redis_client
+    tableWidget.setRowCount(0)
+
+  
+    # Search for relevant data in the Redis database
+    keys = redis_client.keys("*")
+    print(keys)
+  
+    for key in keys:
+        key_str = key.decode('utf-8')
+        patient_id = key_str.split("_")[0]
+        name = key_str.split("_")[1]
+        vital_sign = key_str.split("_")[2]
+        values = redis_client.lrange(key, 0, -1)
+        values = [float(value) for value in values]
+        print(values)
+      
+        row_position = tableWidget.rowCount()
+        tableWidget.insertRow(row_position)
+        tableWidget.setItem(row_position, 0, QTableWidgetItem(patient_id))
+        tableWidget.setItem(row_position, 1, QTableWidgetItem(name))
+        tableWidget.setItem(row_position, 2, QTableWidgetItem(vital_sign))
+        tableWidget.setItem(row_position, 3, QTableWidgetItem(str(values)))

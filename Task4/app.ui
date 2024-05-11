@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="tableTab">
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -426,17 +426,6 @@ color: white;
            <enum>QFrame::Raised</enum>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
-           <item row="0" column="0">
-            <widget class="QLineEdit" name="searchByVitalTextBox">
-             <property name="styleSheet">
-              <string notr="true">background-color:rgb(255, 255, 255);
-color:black;</string>
-             </property>
-             <property name="placeholderText">
-              <string>Search</string>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="1">
             <widget class="QPushButton" name="searchByVitalBtn">
              <property name="text">
@@ -448,6 +437,8 @@ color:black;</string>
             <widget class="QTableWidget" name="tableWidget">
              <property name="styleSheet">
               <string notr="true">color:black;
+border: 1px solid black;
+background-color:white
 </string>
              </property>
              <attribute name="horizontalHeaderCascadingSectionResizes">
@@ -458,6 +449,9 @@ color:black;</string>
              </attribute>
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
              </attribute>
              <attribute name="verticalHeaderShowSortIndicator" stdset="0">
               <bool>false</bool>
@@ -485,6 +479,23 @@ color:black;</string>
                <string>Readings</string>
               </property>
              </column>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QTextEdit" name="searchByVitalTextBox">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>23</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color:black;
+background-color:white;</string>
+             </property>
+             <property name="placeholderText">
+              <string>search by vital sign</string>
+             </property>
             </widget>
            </item>
           </layout>

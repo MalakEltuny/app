@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QPushButton,QRadioButton,QTextEdit,QLCDNumber
 import functions
-
+import pyqtgraph
 
 def initConnectors(self):
     
@@ -46,5 +46,30 @@ def initConnectors(self):
     #Type of vital signs functionality 
     VtSignTBX= self.findChild(QTextEdit, "displayed_vital_sign_textbox")
     VtSignTBX.setReadOnly(True)
+
+
+    # display btn
+    displayBTN= self.findChild(QPushButton, "display_button")
+    displayBTN.clicked.connect(lambda: functions.plotGraph(self,vitalGraph))
+    
+    #Vital Graph
+    vitalGraph=self.findChild(pyqtgraph.PlotWidget, "widget")
+
+    #Table Widget
+    tableWidget=self.findChild(QtWidgets.QTableWidget,"tableWidget")
+
+    # search by vitalSign textbox
+    searchByVitalSignTXB=self.findChild(QTextEdit,"searchByVitalTextBox")
+    # search by vital sign in table
+    searchByVitalSignBTN=self.findChild(QPushButton,"searchByVitalBtn")
+    searchByVitalSignBTN.clicked.connect(lambda: functions.searchByVitalBtnClicked(self,searchByVitalSignTXB.toPlainText(),tableWidget))
+
+    #tab widget
+    tableTab=self.findChild(QtWidgets.QTabWidget,"tableTab")
+    tableTab.currentChanged.connect(lambda: functions.getAllData(self,tableWidget))
+
+    
+    
+
   
 
