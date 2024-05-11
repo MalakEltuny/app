@@ -6,6 +6,10 @@ import threading
 import redis
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QTableWidgetItem
+from pyqtgraph import mkPen
+from random import randrange
+
+
 
 
 
@@ -94,7 +98,9 @@ def testConnection(self,vitalNumber):
         client_socket.close()
         print("Connection closed.")
         client_socket = None  # Reset the client_socket variable
+        self.sendBtn.setText("Send")
     else:
+        self.sendBtn.setText("Stop")
         print("Connection is open.")
         threading.Thread(target=startConnection, args=(vitalNumber,)).start()
 
@@ -131,19 +137,40 @@ def handleSearchByIdButton(ID, name, vs,vitalGraph):
   global vitalSignValues
   vitalGraph.clear()
   redis_name = redis_client.keys(f'{ID}_*')
+  print(redis_name)
+
   if not redis_name:
     QMessageBox.warning(None, "Alert", "Patient not found")
     name.setText("")  
     vs.setText("")
     return
-  redis_name_str = redis_name[0].decode('utf-8')
-  print(redis_name_str.split("_"))
-  name.setText(redis_name_str.split("_")[1])  
-  vs.setText(redis_name_str.split("_")[2])
-  values=redis_client.lrange(redis_name_str, 0, -1)
-  vitalSignValues=[float(value) for value in values]
+  if len(redis_name) > 1:
+      vitalNameArray=[redis_name[i].decode("utf-8").split("_")[2] for i in range(len(redis_name))]
+      print(vitalNameArray)
+      ## put all the vitalNames in the vs.setText
+      vs.setText(f'{vitalNameArray}')
+      for i in range(len(redis_name)):
+          values=[float(value) for value in redis_client.lrange(redis_name[i], 0, -1)]
+          print(values)
+          color = (randrange(256), randrange(256), randrange(256))
 
-  QMessageBox.warning(None, "Alert", "Data Loaded press display button to see the data.")
+    # Create a pen with the random color
+          pen = mkPen(color=color)
+          vitalGraph.addLegend()
+          vitalGraph.plot(values, name=f'{ID}_{redis_name[i].decode("utf-8").split("_")[1]}_{redis_name[i].decode("utf-8").split("_")[2]}',pen=pen)
+          vitalGraph.show()
+      name.setText(f'{redis_name[0].decode("utf-8").split("_")[1]}')
+  else:
+  
+    redis_name_str = redis_name[0].decode('utf-8')
+    print(redis_name_str.split("_"))
+    name.setText(redis_name_str.split("_")[1])  
+    vs.setText(redis_name_str.split("_")[2])
+    values=redis_client.lrange(redis_name_str, 0, -1)
+    vitalSignValues=[float(value) for value in values]
+    vitalGraph.plot(vitalSignValues)
+    vitalGraph.show()
+
 
 
 

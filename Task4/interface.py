@@ -10,8 +10,8 @@ def initConnectors(self):
     vitalNumber=self.findChild(QLCDNumber,"lcdNumber")
 
     #Send Btn connection
-    sendBtn=self.findChild(QPushButton,"send_button")
-    sendBtn.clicked.connect(lambda: functions.testConnection(self,vitalNumber))
+    self.sendBtn=self.findChild(QPushButton,"send_button")
+    self.sendBtn.clicked.connect(lambda: functions.testConnection(self,vitalNumber))
 
     #Vital Sign  Radio btn
     bodyTemp=self.findChild(QRadioButton,"bodytemp_radioButton")
@@ -47,10 +47,6 @@ def initConnectors(self):
     VtSignTBX= self.findChild(QTextEdit, "displayed_vital_sign_textbox")
     VtSignTBX.setReadOnly(True)
 
-
-    # display btn
-    displayBTN= self.findChild(QPushButton, "display_button")
-    displayBTN.clicked.connect(lambda: functions.plotGraph(self,vitalGraph))
     
     #Vital Graph
     vitalGraph=self.findChild(pyqtgraph.PlotWidget, "widget")
