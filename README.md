@@ -2,7 +2,7 @@
 
 ## Project Overview:
 - This project implements a real-time medical monitoring system using Python, PyQt5 for the GUI, and Redis for the Database.
-- Using the Socket Programming and TCP/IP as the communication method between the client and the server
+- Using the Socket Programming and TCP as the communication method between the client and the server
 - The client is a GUI that handles both sending random data in the range of the specific vital Sign and visualize these data in a Line Graph or in a Table
 - The server handles the request from the client side sent in a JSON format to standardize the request method and saves the data in redis database the key is the id, name, and the vital sign name joined together with a sperator as _ and the values is stored in the array linked to that specific key
 
