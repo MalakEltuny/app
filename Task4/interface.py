@@ -32,7 +32,7 @@ def initConnectors(self):
 
     # Search by ID button functionality
     searchIdBTN= self.findChild(QPushButton, "search_button")
-    searchIdBTN.clicked.connect(lambda: functions.searchThread(searchByIdTXB.toPlainText(), ByName, VtSignTBX))
+    searchIdBTN.clicked.connect(lambda: functions.searchThread(searchByIdTXB.toPlainText(), ByName, VtSignTBX,vitalGraph))
 
     searchByIdTXB= self.findChild(QTextEdit,"searchbyid_textbox")
 

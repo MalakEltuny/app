@@ -127,19 +127,22 @@ def handleTextChanged(self, text,boxType):
         patientId=text
 
 
-def handleSearchByIdButton(ID, name, vs):
+def handleSearchByIdButton(ID, name, vs,vitalGraph):
   global vitalSignValues
+  vitalGraph.clear()
   redis_name = redis_client.keys(f'{ID}_*')
   if not redis_name:
     QMessageBox.warning(None, "Alert", "Patient not found")
+    name.setText("")  
+    vs.setText("")
     return
   redis_name_str = redis_name[0].decode('utf-8')
   print(redis_name_str.split("_"))
   name.setText(redis_name_str.split("_")[1])  
   vs.setText(redis_name_str.split("_")[2])
   values=redis_client.lrange(redis_name_str, 0, -1)
-  vitalSignValues=[float(value) for value in values] 
-  print(vitalSignValues)
+  vitalSignValues=[float(value) for value in values]
+
   QMessageBox.warning(None, "Alert", "Data Loaded press display button to see the data.")
 
 
@@ -147,7 +150,7 @@ def handleSearchByIdButton(ID, name, vs):
     
 
 
-def searchThread(ID, name, vs):
+def searchThread(ID, name, vs,vitalGraph):
     global client_socket
     print("Testing connection...")
     if client_socket and client_socket.fileno() != -1:
@@ -157,7 +160,7 @@ def searchThread(ID, name, vs):
         client_socket = None  # Reset the client_socket variable
     else:
       print("Connection is open.")
-      handleSearchByIdButton(ID,name,vs)
+      handleSearchByIdButton(ID,name,vs,vitalGraph)
 
 
 
@@ -175,7 +178,10 @@ def searchByVitalBtnClicked(self,searchByVitalTextBox, tableWidget):
     
   
     # Search for relevant data in the Redis database
-    keys = redis_client.keys(f'*_{searchByVitalTextBox}')
+    if(searchByVitalTextBox==""):
+        keys = redis_client.keys(f'*')
+    else:
+        keys = redis_client.keys(f'*_{searchByVitalTextBox}*')
   
     for key in keys:
         key_str = key.decode('utf-8')
@@ -184,7 +190,6 @@ def searchByVitalBtnClicked(self,searchByVitalTextBox, tableWidget):
         vital_sign = key_str.split("_")[2]
         values = redis_client.lrange(key, 0, -1)
         values = [float(value) for value in values]
-        print(values)
       
         row_position = tableWidget.rowCount()
         tableWidget.insertRow(row_position)
@@ -192,7 +197,7 @@ def searchByVitalBtnClicked(self,searchByVitalTextBox, tableWidget):
         tableWidget.setItem(row_position, 1, QTableWidgetItem(name))
         tableWidget.setItem(row_position, 2, QTableWidgetItem(vital_sign))
         tableWidget.setItem(row_position, 3, QTableWidgetItem(str(values)))
-
+    tableWidget.sortItems(0)
 
 def getAllData(self,tableWidget):
     
@@ -202,7 +207,6 @@ def getAllData(self,tableWidget):
   
     # Search for relevant data in the Redis database
     keys = redis_client.keys("*")
-    print(keys)
   
     for key in keys:
         key_str = key.decode('utf-8')
@@ -211,11 +215,11 @@ def getAllData(self,tableWidget):
         vital_sign = key_str.split("_")[2]
         values = redis_client.lrange(key, 0, -1)
         values = [float(value) for value in values]
-        print(values)
       
         row_position = tableWidget.rowCount()
         tableWidget.insertRow(row_position)
-        tableWidget.setItem(row_position, 0, QTableWidgetItem(patient_id))
+        tableWidget.setItem(row_position, 0, QTableWidgetItem((patient_id)))
         tableWidget.setItem(row_position, 1, QTableWidgetItem(name))
         tableWidget.setItem(row_position, 2, QTableWidgetItem(vital_sign))
         tableWidget.setItem(row_position, 3, QTableWidgetItem(str(values)))
+    tableWidget.sortItems(0)
